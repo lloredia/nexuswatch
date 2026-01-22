@@ -246,7 +246,7 @@ python scripts/integration_bridge.py \
 | 1 | HoneyTrap | ✅ Complete | Distributed honeypot network |
 | 2 | SentinelForge | ✅ Complete | Threat intelligence aggregator |
 | 3 | **NexusWatch** | ✅ Complete | SIEM Dashboard |
-| 4 | IronFlow | ✅ Complete | Incident Response Orchestrator |
+| 4 | IronFlow | 🔜 Planned | Incident Response Orchestrator |
 | 5 | Compliance Engine | 🔜 Planned | Regulatory adherence tracking |
 
 ## 🤝 Contributing
