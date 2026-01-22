@@ -1,15 +1,13 @@
+
+
 <p align="center">
-  <img src="public/nexuswatch-logo.png" alt="NexusWatch Logo" width="150">
+  <img src="public/nexuswatch-banner.png" alt="NexusWatch Banner" width="800">
 </p>
 
 <p align="center">
-  <img src="public/nexuswatch-banner.png" alt="NexusWatch Banner" width="600">
-</p>
-
-<p align="center">
-  <h1 align="center">👁️ NEXUSWATCH</h1>
+  <h1 align="center"><em>See Everything. Miss Nothing. Respond Faster.</em></h1>
   <p align="center">
-    <em>See Everything. Miss Nothing. Respond Faster.</em>
+    
   </p>
 </p>
 
@@ -275,4 +273,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 <p align="center">
   <strong>Part of the SecOps Command Center</strong><br>
   🍯 HoneyTrap • 🛡️ SentinelForge • 👁️ NexusWatch • ⚡ IronFlow
+</p>
+<p align="center">
+  <img src="public/nexuswatch-logo.png" alt="NexusWatch Logo" width="150">
 </p>
