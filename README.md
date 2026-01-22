@@ -1,97 +1,140 @@
-# NexusWatch
+<p align="center">
+  <h1 align="center">👁️ NEXUSWATCH</h1>
+  <p align="center">
+    <em>See Everything. Miss Nothing. Respond Faster.</em>
+  </p>
+</p>
 
-**SIEM Dashboard • SecOps Command Center Component 3**
+<p align="center">
+  <img src="https://img.shields.io/badge/React-18.2-61DAFB.svg?style=flat&logo=react&logoColor=white" alt="React">
+  <img src="https://img.shields.io/badge/Vite-5.0-646CFF.svg?style=flat&logo=vite&logoColor=white" alt="Vite">
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
+</p>
 
-NexusWatch is a centralized Security Information and Event Management (SIEM) dashboard designed to aggregate, correlate, and visualize security events from across your infrastructure. As the third component of the SecOps Command Center, it integrates seamlessly with HoneyTrap (honeypot network) and SentinelForge (threat intelligence platform) to provide real-time security monitoring and incident visibility.
+<p align="center">
+  <em>Built with the tools and technologies:</em>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/React-61DAFB.svg?style=flat&logo=react&logoColor=black" alt="React">
+  <img src="https://img.shields.io/badge/Vite-646CFF.svg?style=flat&logo=vite&logoColor=white" alt="Vite">
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E.svg?style=flat&logo=javascript&logoColor=black" alt="JavaScript">
+  <img src="https://img.shields.io/badge/Python-3776AB.svg?style=flat&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/Docker-2496ED.svg?style=flat&logo=docker&logoColor=white" alt="Docker">
+  <img src="https://img.shields.io/badge/JSON-000000.svg?style=flat&logo=json&logoColor=white" alt="JSON">
+</p>
 
 ---
 
-## Architecture Overview
+## 📖 Overview
+
+NexusWatch is the SIEM Dashboard component of the SecOps Command Center - a centralized security event monitoring platform that aggregates, correlates, and visualizes security events from across your infrastructure. It integrates with HoneyTrap (honeypot network) and SentinelForge (threat intelligence) to provide real-time security visibility.
+
+## ✨ Features
+
+- **Real-Time Event Stream** - Live security events with 3-second auto-refresh
+- **Severity Filtering** - Filter by Critical, High, Medium, Low
+- **IOC Matching** - Automatic correlation with SentinelForge threat intel
+- **Threat Scoring** - Dynamic risk scoring per event (0-100)
+- **24h Timeline** - Hourly event distribution visualization
+- **Attack Origins** - Top source IP analysis
+- **Data Source Health** - Monitor all 8 integrated sources
+- **Event Investigation** - Click-through details with Block/Investigate/Resolve actions
+
+## 🏗️ Architecture
+
+```mermaid
+graph TB
+    subgraph Data Sources
+        HT[🍯 HoneyTrap<br/>SSH/HTTP]
+        SF[🛡️ SentinelForge<br/>IOC Feed]
+        FW[🔥 Firewall<br/>Logs]
+        EDR[💻 EDR<br/>Telemetry]
+        IDS[🚨 IDS/IPS<br/>Alerts]
+        WAF[🌐 WAF<br/>Events]
+        DNS[📡 DNS<br/>Monitor]
+    end
+
+    subgraph NexusWatch
+        ING[Event Ingestion]
+        NORM[Normalization]
+        ENR[Enrichment]
+        ANAL[Analytics Engine]
+        DASH[Dashboard UI]
+    end
+
+    HT --> ING
+    SF --> ING
+    FW --> ING
+    EDR --> ING
+    IDS --> ING
+    WAF --> ING
+    DNS --> ING
+
+    ING --> NORM --> ENR --> ANAL --> DASH
+```
+
+## 📊 Event Flow
+
+```mermaid
+sequenceDiagram
+    participant HT as HoneyTrap
+    participant NW as NexusWatch
+    participant SF as SentinelForge
+    participant AN as Analyst
+
+    HT->>NW: Security Event (JSON)
+    NW->>NW: Normalize & Parse
+    NW->>SF: IOC Lookup Request
+    SF-->>NW: Threat Intelligence
+    NW->>NW: Calculate Threat Score
+    NW->>NW: Update Dashboard
+    AN->>NW: View Event Details
+    AN->>NW: Take Action (Block/Investigate/Resolve)
+```
+
+## 🛠️ Tech Stack
+
+| Component | Technology | Purpose |
+|-----------|------------|---------|
+| Frontend | React 18 | Dashboard UI |
+| Build Tool | Vite 5 | Fast development & bundling |
+| Styling | Inline CSS + CSS Variables | Cyberpunk aesthetic |
+| Fonts | Orbitron, JetBrains Mono | Terminal/tech feel |
+| Integration | Python | Bridge script for HoneyTrap/SentinelForge |
+| Logo | ReportLab | PDF vector graphics |
+
+## 📁 Project Structure
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                         NEXUSWATCH SIEM                              │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐               │
-│  │   HoneyTrap  │  │ SentinelForge│  │   Firewall   │               │
-│  │   SSH/HTTP   │  │  IOC Feed    │  │    Logs      │               │
-│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘               │
-│         │                  │                  │                      │
-│         └──────────────────┼──────────────────┘                      │
-│                            ▼                                         │
-│  ┌─────────────────────────────────────────────────────────────┐    │
-│  │                    Event Ingestion Layer                     │    │
-│  │  • Syslog/JSON/CEF parsing  • Normalization  • Enrichment   │    │
-│  └─────────────────────────────┬───────────────────────────────┘    │
-│                                ▼                                     │
-│  ┌─────────────────────────────────────────────────────────────┐    │
-│  │                    Analytics Engine                          │    │
-│  │  • Real-time correlation  • Pattern detection  • Scoring    │    │
-│  └─────────────────────────────┬───────────────────────────────┘    │
-│                                ▼                                     │
-│  ┌─────────────────────────────────────────────────────────────┐    │
-│  │                    Dashboard Interface                       │    │
-│  │  • Metrics  • Event Stream  • Timeline  • Threat Map        │    │
-│  └─────────────────────────────────────────────────────────────┘    │
-│                                                                      │
-└─────────────────────────────────────────────────────────────────────┘
+nexuswatch/
+├── src/
+│   ├── App.jsx              # Main dashboard component
+│   └── main.jsx             # React entry point
+├── public/
+│   ├── nexuswatch-logo.pdf  # Square logo
+│   └── nexuswatch-banner.pdf # Wide banner
+├── scripts/
+│   ├── generate_logo.py     # Logo generator
+│   └── integration_bridge.py # HoneyTrap/SentinelForge connector
+├── index.html               # HTML template
+├── package.json             # Dependencies
+├── vite.config.js           # Vite configuration
+└── README.md
 ```
 
----
-
-## Features
-
-### Real-Time Event Monitoring
-- Live event stream with automatic updates (3-second intervals)
-- Severity-based color coding (Critical, High, Medium, Low)
-- IOC match indicators integrated from SentinelForge
-- Threat scoring for each event
-
-### Metrics Dashboard
-- **Total Events (24h)**: Aggregate event count with trend indicators
-- **Critical Alerts**: High-priority security incidents requiring immediate attention
-- **Active Threats**: Currently unresolved security threats
-- **Blocked IPs**: Count of IPs blocked by automated response
-- **IOC Matches**: Events matching known indicators of compromise
-- **Events/sec**: Real-time throughput measurement
-- **Avg Response**: Mean incident response time
-- **Data Sources**: Active security data feeds
-
-### Visualization
-- **Event Timeline**: 24-hour histogram showing event distribution by severity
-- **Threat Map**: Top attack origin IP ranges with frequency analysis
-- **Data Source Status**: Real-time health monitoring of all integrated sources
-
-### Event Investigation
-- Click any event to view detailed information
-- Quick actions: Block IP, Investigate, Resolve
-- Full event context including source, destination, threat score
-
-### Data Sources
-The dashboard aggregates events from multiple security tools:
-- HoneyTrap-SSH (honeypot network)
-- HoneyTrap-HTTP (honeypot network)
-- SentinelForge (threat intelligence)
-- Firewall logs
-- IDS/IPS alerts
-- EDR telemetry
-- WAF events
-- DNS monitoring
-
----
-
-## Installation
+## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ 
-- npm or yarn
-- HoneyTrap and SentinelForge deployed (optional, for full integration)
 
-### Quick Start
+- Node.js 18+
+- npm or yarn
+
+### Installation
 
 ```bash
-# Clone or navigate to the project
+# Clone the repository
+git clone https://github.com/yourusername/nexuswatch.git
 cd nexuswatch
 
 # Install dependencies
@@ -99,12 +142,18 @@ npm install
 
 # Start development server
 npm run dev
-
-# Build for production
-npm run build
 ```
 
-### Docker Deployment
+Dashboard available at `http://localhost:3000`
+
+### Production Build
+
+```bash
+npm run build
+npm run preview
+```
+
+## 🐳 Docker Deployment
 
 ```dockerfile
 FROM node:18-alpine AS builder
@@ -117,6 +166,7 @@ RUN npm run build
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
 EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
 ```
 
 ```bash
@@ -124,164 +174,98 @@ docker build -t nexuswatch:latest .
 docker run -d -p 3000:80 nexuswatch:latest
 ```
 
----
+## 🔌 Integration Bridge
 
-## Configuration
+Connect HoneyTrap and SentinelForge to NexusWatch:
 
-### Environment Variables
-
-```env
-# API Endpoints
-VITE_HONEYTRAP_API=http://localhost:8080
-VITE_SENTINELFORGE_API=http://localhost:3001
-
-# Feature Flags
-VITE_ENABLE_LIVE_MODE=true
-VITE_REFRESH_INTERVAL=3000
-
-# Authentication (for production)
-VITE_AUTH_ENABLED=false
+```bash
+python scripts/integration_bridge.py \
+  --honeytrap-dir ./honeytrap/events \
+  --sentinelforge http://localhost:3001 \
+  --nexuswatch http://localhost:3000 \
+  --interval 5
 ```
 
-### Data Source Integration
-
-NexusWatch expects events in the following JSON format:
+### Event Format
 
 ```json
 {
   "id": "EVT-000001",
   "timestamp": "2026-01-22T10:30:00Z",
-  "type": "INTRUSION_ATTEMPT",
-  "severity": "critical",
+  "type": "BRUTE_FORCE",
+  "severity": "high",
   "source": "HoneyTrap-SSH",
   "sourceIp": "185.220.101.45",
   "destIp": "10.0.1.50",
   "destPort": 22,
   "status": "active",
-  "details": "Multiple failed SSH authentication attempts detected",
+  "details": "Multiple failed SSH authentication attempts",
   "iocMatch": true,
-  "threatScore": 95
+  "threatScore": 85
 }
 ```
 
----
-
-## Keyboard Shortcuts
+## ⌨️ Keyboard Shortcuts
 
 | Key | Action |
 |-----|--------|
 | `Ctrl+L` | Toggle live mode on/off |
 | `Escape` | Close event detail modal |
 
----
+## 📈 Metrics Displayed
 
-## Integration with SecOps Command Center
+| Metric | Description |
+|--------|-------------|
+| Total Events (24h) | Aggregate event count with hourly trend |
+| Critical Alerts | High-priority incidents requiring attention |
+| Active Threats | Currently unresolved security threats |
+| Blocked IPs | IPs blocked by automated response |
+| IOC Matches | Events matching known threat indicators |
+| Events/sec | Real-time ingestion throughput |
+| Avg Response | Mean incident response time |
+| Data Sources | Number of active data feeds |
 
-NexusWatch is designed to work as part of the larger SecOps ecosystem:
+## 🔒 Security Considerations
 
-### HoneyTrap → NexusWatch
-```python
-# Example: Forward honeypot events to SIEM
-import requests
+- Deploy behind reverse proxy with TLS
+- Enable authentication for production
+- Restrict access to internal security team
+- Do not expose to public internet
+- Audit dashboard access regularly
 
-event = {
-    "type": "BRUTE_FORCE",
-    "severity": "high",
-    "source": "HoneyTrap-SSH",
-    "sourceIp": attacker_ip,
-    "details": f"Brute force attack detected: {attempt_count} attempts"
-}
-
-requests.post("http://nexuswatch:3000/api/events", json=event)
-```
-
-### SentinelForge → NexusWatch
-```python
-# Example: IOC enrichment integration
-def enrich_event(event):
-    # Check against SentinelForge IOC database
-    ioc_response = requests.get(
-        f"http://sentinelforge:3001/api/iocs/search",
-        params={"ip": event["sourceIp"]}
-    )
-    
-    if ioc_response.json().get("matches"):
-        event["iocMatch"] = True
-        event["threatScore"] = min(100, event["threatScore"] + 20)
-    
-    return event
-```
-
----
-
-## Roadmap
-
-NexusWatch is Component 3 of the SecOps Command Center. Remaining components:
+## 🗺️ SecOps Command Center Roadmap
 
 | # | Component | Status | Description |
 |---|-----------|--------|-------------|
 | 1 | HoneyTrap | ✅ Complete | Distributed honeypot network |
 | 2 | SentinelForge | ✅ Complete | Threat intelligence aggregator |
 | 3 | **NexusWatch** | ✅ Complete | SIEM Dashboard |
-| 4 | Incident Response Orchestrator | 🔜 Planned | Automated response workflows |
+| 4 | IronFlow | ✅ Complete | Incident Response Orchestrator |
 | 5 | Compliance Engine | 🔜 Planned | Regulatory adherence tracking |
 
----
+## 🤝 Contributing
 
-## API Reference
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-### Event Ingestion
+## 📄 License
 
-```
-POST /api/events
-Content-Type: application/json
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-{
-  "type": "string",
-  "severity": "critical|high|medium|low",
-  "source": "string",
-  "sourceIp": "string",
-  "destIp": "string",
-  "destPort": "number",
-  "details": "string"
-}
-```
+## 🙏 Acknowledgments
 
-### Query Events
-
-```
-GET /api/events?severity=critical&source=HoneyTrap-SSH&limit=100
-```
-
-### Metrics
-
-```
-GET /api/metrics
-```
+- [React](https://reactjs.org/) - UI framework
+- [Vite](https://vitejs.dev/) - Build tooling
+- [JetBrains Mono](https://www.jetbrains.com/lp/mono/) - Monospace font
+- [Orbitron](https://fonts.google.com/specimen/Orbitron) - Display font
 
 ---
 
-## Security Considerations
+<p align="center">
+  <strong>Part of the SecOps Command Center</strong><br>
+  🍯 HoneyTrap • 🛡️ SentinelForge • 👁️ NexusWatch • ⚡ IronFlow
+</p>
 
-- Deploy behind a reverse proxy with TLS
-- Enable authentication for production environments
-- Restrict network access to internal security team
-- Audit log access regularly
-- Do not expose to public internet
-
----
-
-## License
-
-MIT License - Part of the SecOps Command Center project.
-
----
-
-## Credits
-
-Built as part of the SecOps Command Center cybersecurity infrastructure project.
-
-**Components:**
-- 🍯 HoneyTrap - Deception technology
-- 🛡️ SentinelForge - Threat intelligence
-- 👁️ NexusWatch - SIEM Dashboard
